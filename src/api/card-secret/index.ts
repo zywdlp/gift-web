@@ -5,6 +5,8 @@ import type {
   CardSecretQueryParams,
   GenerateCardSecretForm,
   GiftCardItem,
+  GiftCardQueryParams,
+  BindGiftCardsForm,
 } from "./types";
 
 const BASE_URL = "/api/v1/card-secrets";
@@ -29,6 +31,20 @@ const CardSecretAPI = {
       url: `${BASE_URL}/${id}/cards`,
       method: "get",
       params,
+    });
+  },
+  getGiftCardPage(params?: GiftCardQueryParams) {
+    return request<unknown, PageResult<GiftCardItem>>({
+      url: `${BASE_URL}/cards`,
+      method: "get",
+      params,
+    });
+  },
+  bindGiftCards(data: BindGiftCardsForm) {
+    return request<unknown, { count: number }>({
+      url: `${BASE_URL}/cards/bind`,
+      method: "post",
+      data,
     });
   },
   exportPrinting(id: string) {

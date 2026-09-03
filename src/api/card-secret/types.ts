@@ -26,7 +26,30 @@ export interface GiftCardItem {
   id: string;
   cardNo: string;
   batchId: string;
-  pin: string;
-  qrToken: string;
+  pin?: string;
+  qrToken?: string;
   createTime?: string;
+  batchNo?: string;
+  productId?: string | null;
+  productName?: string;
+  status?: "UNBOUND" | "ACTIVE";
+  expiryAt?: string | null;
+  boundAt?: string | null;
+  bindRemark?: string | null;
+}
+
+export interface GiftCardQueryParams extends Partial<BaseQueryParams> {
+  pageNum?: number;
+  pageSize?: number;
+  cardNo?: string;
+  batchNo?: string;
+  productName?: string;
+  status?: "UNBOUND" | "ACTIVE";
+}
+
+export interface BindGiftCardsForm {
+  cardIds: string[];
+  productId: string;
+  expiryAt: string;
+  remark?: string;
 }
