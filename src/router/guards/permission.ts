@@ -2,7 +2,6 @@ import type { RouteRecordRaw } from "vue-router";
 import NProgress from "@/plugins/nprogress";
 import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/stores";
-import { setupSse } from "@/composables";
 
 /**
  * 路由权限守卫
@@ -39,7 +38,6 @@ export function setupPermissionGuard() {
       if (!permissionStore.isRouteGenerated) {
         if (!userStore.userInfo?.roles?.length) {
           await userStore.getUserInfo();
-          setupSse();
         }
 
         const dynamicRoutes = await permissionStore.generateRoutes();

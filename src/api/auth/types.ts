@@ -7,9 +7,9 @@ export interface LoginRequest {
   /** 密码 */
   password: string;
   /** 验证码缓存 key */
-  captchaId?: string;
+  captchaId: string;
   /** 验证码 */
-  captchaCode?: string;
+  captchaCode: string;
   /** 记住我 */
   rememberMe?: boolean;
 }

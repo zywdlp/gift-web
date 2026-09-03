@@ -11,7 +11,6 @@ import { setupRouter } from "@/router";
 import { setupStore } from "@/stores";
 import * as ElementPlusIcons from "@element-plus/icons-vue";
 import { setupPermissionGuard } from "@/router/guards/permission";
-import { setupSse } from "@/composables";
 
 const app = createApp(App);
 
@@ -22,6 +21,5 @@ setupStore(app);
 Object.entries(ElementPlusIcons).forEach(([name, comp]) => app.component(name, comp));
 
 setupPermissionGuard();
-setupSse();
 
 app.mount("#app");

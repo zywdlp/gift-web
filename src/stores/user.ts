@@ -7,9 +7,7 @@ import type { UserInfo } from "@/api/system/user";
 
 import { AuthStorage } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/stores/permission";
-import { useDictStoreHook } from "@/stores/dict";
 import { useTagsViewStore } from "@/stores";
-import { cleanupSseServices } from "@/composables";
 
 export const useUserStore = defineStore("user", () => {
   // 用户信息
@@ -74,11 +72,7 @@ export const useUserStore = defineStore("user", () => {
 
     // 2. 重置其他模块状态
     usePermissionStoreHook().resetRouter();
-    useDictStoreHook().clearDictCache();
     useTagsViewStore().delAllViews();
-
-    // 3. 清理 SSE 连接
-    cleanupSseServices();
   }
 
   /**

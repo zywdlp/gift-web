@@ -50,86 +50,76 @@
 
       <div class="login-card">
         <div class="login-card__inner">
-          <transition name="fade-slide" mode="out-in">
-            <div v-if="component === 'login'" key="login" class="login-card__form">
-              <h2 class="login-card__title">欢迎回来</h2>
-              <p class="login-card__desc">请完成身份验证后进入系统</p>
+          <div class="login-card__form">
+            <h2 class="login-card__title">欢迎回来</h2>
+            <p class="login-card__desc">请完成身份验证后进入系统</p>
 
-              <el-form
-                ref="loginFormRef"
-                :model="loginFormData"
-                :rules="loginRules"
-                size="large"
-                :validate-on-rule-change="false"
-              >
-                <el-form-item prop="username">
+            <el-form
+              ref="loginFormRef"
+              :model="loginFormData"
+              :rules="loginRules"
+              size="large"
+              :validate-on-rule-change="false"
+            >
+              <el-form-item prop="username">
+                <el-input
+                  v-model.trim="loginFormData.username"
+                  placeholder="用户名"
+                  :prefix-icon="UserIcon"
+                />
+              </el-form-item>
+
+              <el-tooltip :visible="isCapsLock" content="大写锁定已开启" placement="right">
+                <el-form-item prop="password">
                   <el-input
-                    v-model.trim="loginFormData.username"
-                    placeholder="用户名"
-                    :prefix-icon="UserIcon"
+                    v-model.trim="loginFormData.password"
+                    placeholder="密码"
+                    type="password"
+                    show-password
+                    :prefix-icon="LockIcon"
+                    @keyup="checkCapsLock"
+                    @keyup.enter="handleLoginSubmit"
                   />
                 </el-form-item>
+              </el-tooltip>
 
-                <el-tooltip :visible="isCapsLock" content="大写锁定已开启" placement="right">
-                  <el-form-item prop="password">
-                    <el-input
-                      v-model.trim="loginFormData.password"
-                      placeholder="密码"
-                      type="password"
-                      show-password
-                      :prefix-icon="LockIcon"
-                      @keyup="checkCapsLock"
-                      @keyup.enter="handleLoginSubmit"
-                    />
-                  </el-form-item>
-                </el-tooltip>
-
-                <el-form-item prop="captchaCode">
-                  <div class="captcha-row">
-                    <el-input
-                      v-model.trim="loginFormData.captchaCode"
-                      placeholder="验证码"
-                      class="captcha-row__input"
-                      @keyup.enter="handleLoginSubmit"
-                    >
-                      <template #prefix>
-                        <span class="input-prefix-icon i-svg:security" />
-                      </template>
-                    </el-input>
-                    <div class="captcha-img" @click="getCaptcha">
-                      <el-icon v-if="codeLoading" class="is-loading" :size="16">
-                        <Loading />
-                      </el-icon>
-                      <img v-else-if="captchaBase64" :src="captchaBase64" alt="验证码" />
-                      <el-icon v-else :size="16"><Refresh /></el-icon>
-                    </div>
+              <el-form-item prop="captchaCode">
+                <div class="captcha-row">
+                  <el-input
+                    v-model.trim="loginFormData.captchaCode"
+                    placeholder="验证码"
+                    class="captcha-row__input"
+                    @keyup.enter="handleLoginSubmit"
+                  >
+                    <template #prefix>
+                      <span class="input-prefix-icon i-svg:security" />
+                    </template>
+                  </el-input>
+                  <div class="captcha-img" @click="getCaptcha">
+                    <el-icon v-if="codeLoading" class="is-loading" :size="16">
+                      <Loading />
+                    </el-icon>
+                    <img v-else-if="captchaBase64" :src="captchaBase64" alt="验证码" />
+                    <el-icon v-else :size="16"><Refresh /></el-icon>
                   </div>
-                </el-form-item>
-
-                <div class="login-options">
-                  <el-checkbox v-model="loginFormData.rememberMe">记住我</el-checkbox>
-                  <a class="login-options__link" @click="showForm('resetPwd')">忘记密码？</a>
                 </div>
+              </el-form-item>
 
-                <el-button
-                  :loading="loading"
-                  type="primary"
-                  size="large"
-                  class="login-btn"
-                  @click="handleLoginSubmit"
-                >
-                  登录
-                </el-button>
-              </el-form>
-            </div>
+              <div class="login-options">
+                <el-checkbox v-model="loginFormData.rememberMe">记住我</el-checkbox>
+              </div>
 
-            <ResetPwd
-              v-else
-              key="resetPwd"
-              class="login-card__form"
-              @update:model-value="component = $event"
-            />
-          </transition>
+              <el-button
+                :loading="loading"
+                type="primary"
+                size="large"
+                class="login-btn"
+                @click="handleLoginSubmit"
+              >
+                登录
+              </el-button>
+            </el-form>
+          </div>
         </div>
 
         <div class="login-footer">Copyright © 2021-2026 youlai.tech</div>
@@ -150,12 +140,10 @@ import { useUserStore } from "@/stores";
 import { AuthStorage } from "@/utils/auth";
 import { appConfig } from "@/settings";
 import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
-import ResetPwd from "./components/ResetPwd.vue";
 import logo from "@/assets/images/logo.png";
 
 const userStore = useUserStore();
 const route = useRoute();
-const component = ref<"login" | "resetPwd">("login");
 
 const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
@@ -167,8 +155,8 @@ const UserIcon = markRaw(User);
 const LockIcon = markRaw(Lock);
 
 const loginFormData = ref<LoginRequest>({
-  username: "admin",
-  password: "123456",
+  username: "",
+  password: "",
   captchaId: "",
   captchaCode: "",
   rememberMe: AuthStorage.getRememberMe(),
@@ -202,13 +190,12 @@ async function handleLoginSubmit() {
 
   loading.value = true;
   try {
-    await userStore.login(loginFormData.value).then(
-      async () => {
-        const redirectPath = (route.query.redirect as string) || "/";
-        await router.push(decodeURIComponent(redirectPath));
-      },
-      () => getCaptcha()
-    );
+    await userStore.login(loginFormData.value);
+    const redirectPath = (route.query.redirect as string) || "/";
+    await router.replace(decodeURIComponent(redirectPath));
+  } catch (error) {
+    console.error("登录后跳转失败:", error);
+    getCaptcha();
   } finally {
     loading.value = false;
   }
@@ -218,10 +205,6 @@ function checkCapsLock(event: KeyboardEvent) {
   if (event instanceof KeyboardEvent) {
     isCapsLock.value = event.getModifierState("CapsLock");
   }
-}
-
-function showForm(type: "resetPwd") {
-  component.value = type;
 }
 
 onMounted(() => getCaptcha());

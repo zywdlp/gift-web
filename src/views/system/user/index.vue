@@ -69,20 +69,6 @@
             </el-button>
           </div>
           <div class="page-toolbar__right">
-            <el-tooltip content="导入" placement="top">
-              <el-button
-                v-hasPerm="'sys:user:import'"
-                class="page-icon-btn"
-                @click="openImportDialog"
-              >
-                <el-icon><Upload /></el-icon>
-              </el-button>
-            </el-tooltip>
-            <el-tooltip content="导出" placement="top">
-              <el-button v-hasPerm="'sys:user:export'" class="page-icon-btn" @click="handleExport">
-                <el-icon><Download /></el-icon>
-              </el-button>
-            </el-tooltip>
             <el-tooltip content="刷新" placement="top">
               <el-button class="page-icon-btn" @click="fetchData">
                 <el-icon><Refresh /></el-icon>
@@ -233,7 +219,10 @@
         </el-form-item>
 
         <el-form-item label="性别" prop="gender">
-          <DictSelect v-model="formData.gender" code="gender" />
+          <el-select v-model="formData.gender" placeholder="请选择性别" clearable>
+            <el-option label="男" :value="UserGender.MALE" />
+            <el-option label="女" :value="UserGender.FEMALE" />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="角色" prop="roleIds">
@@ -321,9 +310,6 @@
         </div>
       </template>
     </el-dialog>
-
-    <!-- 用户导入 -->
-    <UserImportDialog v-model="importDialogVisible" @import-success="handleQuery()" />
   </div>
 </template>
 
@@ -338,10 +324,8 @@ import type { OptionItem } from "@/api/common";
 import { useAppStore, useUserStore } from "@/stores";
 import { usePageTable, useTableSelection } from "@/composables";
 import { CommonStatus, DeviceEnum, DialogMode, UserGender } from "@/enums";
-import { downloadFile } from "@/utils";
 
 import UserDeptTree from "./components/UserDeptTree.vue";
-import UserImportDialog from "./components/UserImportDialog.vue";
 
 defineOptions({
   name: "User",
@@ -380,7 +364,6 @@ const dialogState = reactive({
   mode: DialogMode.CREATE,
 });
 
-const importDialogVisible = ref(false);
 const resetPasswordSubmitting = ref(false);
 
 const initialFormData: UserForm = {
@@ -569,22 +552,6 @@ async function handleDelete(id?: string): Promise<void> {
   } finally {
     loading.value = false;
   }
-}
-
-/**
- * 导出当前查询条件下的用户列表。
- */
-async function handleExport(): Promise<void> {
-  const response = await UserAPI.export(params);
-  downloadFile(response);
-  ElMessage.success("导出成功");
-}
-
-/**
- * 打开用户导入弹窗。
- */
-function openImportDialog(): void {
-  importDialogVisible.value = true;
 }
 
 /**

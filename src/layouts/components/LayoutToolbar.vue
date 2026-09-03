@@ -18,18 +18,16 @@
       <el-dropdown trigger="click">
         <div class="layout-user">
           <div class="layout-user__avatar">
-            <img :src="userStore.userInfo.avatar" class="layout-user__avatar-img" />
+            <el-avatar :size="28" :src="userStore.userInfo.avatar || undefined">
+              {{ avatarText }}
+            </el-avatar>
           </div>
           <span class="layout-user__name">{{ userStore.userInfo.username }}</span>
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="handleProfileClick">
-              个人中心
-            </el-dropdown-item>
-            <el-dropdown-item divided @click="logout">
-              退出登录
-            </el-dropdown-item>
+            <el-dropdown-item @click="handleProfileClick">个人中心</el-dropdown-item>
+            <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -57,15 +55,12 @@ const userStore = useUserStore();
 
 const route = useRoute();
 const router = useRouter();
+const avatarText = computed(() => {
+  const name = userStore.userInfo.nickname || userStore.userInfo.username || "管";
+  return name.slice(0, 1).toUpperCase();
+});
 
 const isDesktop = computed(() => appStore.device === DeviceEnum.DESKTOP);
-
-/**
- * 打开个人中心页面
- */
-function handleProfileClick() {
-  router.push({ name: "Profile" });
-}
 
 const toolbarToneClass = computed(() => {
   const { resolvedTheme, sidebarColorScheme, layout } = settingStore;
@@ -99,8 +94,12 @@ function logout() {
   });
 }
 
+function handleProfileClick() {
+  router.push({ name: "Profile" });
+}
+
 /**
- * 打开系统设置页面
+ * 打开本地显示设置页面
  */
 function handleSettingsClick() {
   settingStore.settingsVisible = true;
@@ -205,15 +204,6 @@ function handleSettingsClick() {
     flex-shrink: 0;
     width: 28px;
     height: 28px;
-    overflow: hidden;
-    border-radius: 50%;
-  }
-
-  &__avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
   }
 
   &__name {
