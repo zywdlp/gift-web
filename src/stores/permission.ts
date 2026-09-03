@@ -127,6 +127,27 @@ const transformRoutes = (routes: RouteItem[], isTopLevel: boolean = true): Route
     const { children, ...args } = route;
     const componentPath = route.component;
 
+    // 后端一级 M 菜单是业务页面而不是 Layout。若直接注册该页面，访问时会绕过
+    // 全局布局，导致左侧菜单、导航栏一并消失。将其包装为 Layout 的默认子页面，
+    // 菜单视觉仍保持一级入口，实际页面则始终运行在后台布局内。
+    if (isTopLevel && componentPath && componentPath !== "Layout" && !children?.length) {
+      const pageComponent = resolveComponent(componentPath);
+      const pageMeta = args.meta;
+      return {
+        path: args.path,
+        component: Layout,
+        meta: pageMeta,
+        children: [
+          {
+            path: "",
+            name: args.name,
+            component: pageComponent,
+            meta: { ...pageMeta, hidden: true },
+          },
+        ],
+      } as RouteRecordRaw;
+    }
+
     // 非顶层目录壳去掉 Layout 组件，仅保留路由结构
     const resolvedComponent = isTopLevel || componentPath !== "Layout" ? componentPath : undefined;
 
