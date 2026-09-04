@@ -16,6 +16,7 @@ export interface ProductItem {
   afterSales?: string | null;
   createTime?: string;
   updateTime?: string;
+  hasBoundCards?: boolean;
 }
 
 export interface ProductForm extends Omit<ProductItem, "id" | "createTime" | "updateTime"> {

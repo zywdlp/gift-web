@@ -49,7 +49,14 @@
           <el-table-column prop="updateTime" label="更新时间" width="180" />
           <el-table-column label="操作" fixed="right" width="160">
             <template #default="{ row }">
-              <el-button link type="primary" @click="openDialog(row.id)">编辑</el-button>
+              <el-button
+                link
+                type="primary"
+                :disabled="row.hasBoundCards"
+                @click="openDialog(row.id)"
+              >
+                编辑
+              </el-button>
               <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
             </template>
           </el-table-column>
@@ -82,7 +89,7 @@
         <el-form-item label="商品简称">
           <el-input v-model="form.shortName" maxlength="100" show-word-limit />
         </el-form-item>
-        <el-form-item label="参考价值">
+        <el-form-item label="参考价值" prop="referenceValue">
           <el-input-number
             v-model="form.referenceValue"
             :min="0"
@@ -204,6 +211,9 @@ const form = reactive<ProductForm>({
 });
 const rules: FormRules<ProductForm> = {
   name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
+  referenceValue: [
+    { required: true, type: "number", message: "请输入参考价值", trigger: "change" },
+  ],
 };
 
 function imageUrl(url: string) {
