@@ -26,7 +26,10 @@ const CardSecretAPI = {
       data,
     });
   },
-  getCards(id: string, params?: Pick<CardSecretQueryParams, "pageNum" | "pageSize">) {
+  getCards(
+    id: string,
+    params?: Pick<CardSecretQueryParams, "pageNum" | "pageSize"> & { cardNo?: string }
+  ) {
     return request<unknown, PageResult<GiftCardItem>>({
       url: `${BASE_URL}/${id}/cards`,
       method: "get",

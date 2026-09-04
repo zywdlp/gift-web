@@ -32,7 +32,9 @@ export interface GiftCardItem {
   batchNo?: string;
   productId?: string | null;
   productName?: string;
-  status?: "UNBOUND" | "ACTIVE";
+  productCoverImage?: string | null;
+  status?: "UNBOUND" | "ACTIVE" | "REDEEMED";
+  displayStatus?: "UNBOUND" | "ACTIVE" | "EXPIRED" | "REDEEMED";
   expiryAt?: string | null;
   boundAt?: string | null;
   bindRemark?: string | null;
@@ -44,7 +46,7 @@ export interface GiftCardQueryParams extends Partial<BaseQueryParams> {
   cardNo?: string;
   batchNo?: string;
   productName?: string;
-  status?: "UNBOUND" | "ACTIVE";
+  status?: "UNBOUND" | "ACTIVE" | "EXPIRED" | "REDEEMED";
 }
 
 export interface BindGiftCardsForm {

@@ -88,6 +88,20 @@
       class="cards-dialog"
       destroy-on-close
     >
+      <el-form :inline="true" :model="cardParams" class="cards-search">
+        <el-form-item label="卡号">
+          <el-input
+            v-model="cardParams.cardNo"
+            clearable
+            placeholder="请输入卡号"
+            @keyup.enter="searchCards"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="searchCards">查询</el-button>
+          <el-button @click="resetCardSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
       <div class="cards-table-wrapper">
         <el-table v-loading="cardsLoading" :data="cards" border height="430">
           <el-table-column type="index" label="#" width="60" />
@@ -140,7 +154,7 @@ const cardTotal = ref(0);
 const currentBatchId = ref("");
 const currentBatchNo = ref("");
 const params = reactive<CardSecretQueryParams>({ pageNum: 1, pageSize: 10, keywords: "" });
-const cardParams = reactive({ pageNum: 1, pageSize: 20 });
+const cardParams = reactive({ pageNum: 1, pageSize: 20, cardNo: "" });
 const form = reactive<GenerateCardSecretForm>({ requestId: "", quantity: 100, remark: "" });
 const rules: FormRules<GenerateCardSecretForm> = {
   quantity: [{ required: true, message: "请输入生成数量", trigger: "change" }],
@@ -196,8 +210,17 @@ function openCards(row: CardSecretBatchItem) {
   currentBatchId.value = row.id;
   currentBatchNo.value = row.batchNo;
   cardParams.pageNum = 1;
+  cardParams.cardNo = "";
   cardsVisible.value = true;
   void fetchCards();
+}
+function searchCards() {
+  cardParams.pageNum = 1;
+  void fetchCards();
+}
+function resetCardSearch() {
+  cardParams.cardNo = "";
+  searchCards();
 }
 async function fetchCards() {
   if (!currentBatchId.value) return;
@@ -255,6 +278,9 @@ onMounted(fetchData);
 }
 .cards-table-wrapper {
   overflow: auto;
+}
+.cards-search {
+  margin-bottom: 12px;
 }
 .form-control {
   width: 100%;

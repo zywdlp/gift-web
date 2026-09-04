@@ -30,6 +30,8 @@
           <el-select v-model="params.status" clearable placeholder="全部" style="width: 120px">
             <el-option label="未绑定" value="UNBOUND" />
             <el-option label="可兑换" value="ACTIVE" />
+            <el-option label="已过期" value="EXPIRED" />
+            <el-option label="已兑换" value="REDEEMED" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -59,6 +61,19 @@
           <el-table-column type="selection" width="52" :selectable="canBind" />
           <el-table-column prop="cardNo" label="卡号" width="180" />
           <el-table-column prop="batchNo" label="批次号" min-width="210" />
+          <el-table-column label="商品主图" width="100" align="center">
+            <template #default="{ row }">
+              <el-image
+                v-if="row.productCoverImage"
+                :src="row.productCoverImage"
+                fit="cover"
+                class="product-cover-image"
+                :preview-src-list="[row.productCoverImage]"
+                preview-teleported
+              />
+              <span v-else class="empty-product-image">暂无</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="productName"
             label="当前商品"
@@ -67,8 +82,8 @@
           />
           <el-table-column label="状态" width="100" align="center">
             <template #default="{ row }">
-              <el-tag :type="row.status === 'ACTIVE' ? 'success' : 'info'">
-                {{ row.status === "ACTIVE" ? "可兑换" : "未绑定" }}
+              <el-tag :type="statusType(row.displayStatus || row.status)">
+                {{ statusLabel(row.displayStatus || row.status) }}
               </el-tag>
             </template>
           </el-table-column>
@@ -135,6 +150,7 @@
             value-format="YYYY-MM-DDTHH:mm:ss"
             placeholder="请选择兑换截止时间"
             class="form-control"
+            :disabled-date="disabledPastDate"
           />
         </el-form-item>
         <el-form-item label="备注">
@@ -191,6 +207,29 @@ const rules: FormRules<BindGiftCardsForm> = {
 };
 function canBind(row: GiftCardItem) {
   return row.status === "UNBOUND" && !row.productId;
+}
+function statusLabel(status?: GiftCardItem["displayStatus"]) {
+  const labels: Record<string, string> = {
+    UNBOUND: "未绑定",
+    ACTIVE: "可兑换",
+    EXPIRED: "已过期",
+    REDEEMED: "已兑换",
+  };
+  return labels[status || ""] || "-";
+}
+function statusType(status?: GiftCardItem["displayStatus"]) {
+  const types: Record<string, "success" | "warning" | "info"> = {
+    ACTIVE: "success",
+    EXPIRED: "warning",
+    REDEEMED: "info",
+    UNBOUND: "info",
+  };
+  return types[status || ""] || "info";
+}
+function disabledPastDate(date: Date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date.getTime() < today.getTime();
 }
 async function fetchData() {
   loading.value = true;
@@ -268,5 +307,14 @@ onMounted(fetchData);
 }
 .bind-count {
   margin-bottom: 18px;
+}
+.product-cover-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+}
+.empty-product-image {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
 }
 </style>

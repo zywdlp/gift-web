@@ -98,7 +98,7 @@
             controls-position="right"
           />
         </el-form-item>
-        <el-form-item label="商品主图">
+        <el-form-item label="商品主图" prop="coverImage">
           <el-upload
             :http-request="uploadCover"
             :show-file-list="false"
@@ -214,6 +214,7 @@ const rules: FormRules<ProductForm> = {
   referenceValue: [
     { required: true, type: "number", message: "请输入参考价值", trigger: "change" },
   ],
+  coverImage: [{ required: true, message: "请上传商品主图", trigger: "change" }],
 };
 
 function imageUrl(url: string) {
