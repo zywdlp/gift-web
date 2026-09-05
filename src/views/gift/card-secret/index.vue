@@ -206,7 +206,8 @@ async function generate() {
     generating.value = false;
   }
 }
-function openCards(row: CardSecretBatchItem) {
+function openCards(tableRow: unknown) {
+  const row = tableRow as CardSecretBatchItem;
   currentBatchId.value = row.id;
   currentBatchNo.value = row.batchNo;
   cardParams.pageNum = 1;
@@ -233,7 +234,8 @@ async function fetchCards() {
     cardsLoading.value = false;
   }
 }
-async function exportPrinting(row: CardSecretBatchItem) {
+async function exportPrinting(tableRow: unknown) {
+  const row = tableRow as CardSecretBatchItem;
   try {
     await ElMessageBox.confirm(
       `确认导出批次“${row.batchNo}”的制卡文件吗？文件包含 PIN 明文。`,
@@ -245,7 +247,8 @@ async function exportPrinting(row: CardSecretBatchItem) {
     /* 取消时不提示 */
   }
 }
-async function exportQr(row: CardSecretBatchItem) {
+async function exportQr(tableRow: unknown) {
+  const row = tableRow as CardSecretBatchItem;
   try {
     await ElMessageBox.confirm(`确认导出批次“${row.batchNo}”的二维码数据吗？`, "导出确认", {
       type: "warning",

@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type { AxiosResponse } from "axios";
 import type { PageResult } from "@/api/common";
 import type {
   CardSecretBatchItem,
@@ -51,14 +52,14 @@ const CardSecretAPI = {
     });
   },
   exportPrinting(id: string) {
-    return request<unknown, Blob>({
+    return request<unknown, AxiosResponse<Blob>>({
       url: `${BASE_URL}/${id}/export-printing`,
       method: "post",
       responseType: "blob",
     });
   },
   exportQr(id: string) {
-    return request<unknown, Blob>({
+    return request<unknown, AxiosResponse<Blob>>({
       url: `${BASE_URL}/${id}/export-qr`,
       method: "post",
       responseType: "blob",

@@ -95,7 +95,7 @@
                 link
                 type="primary"
                 :disabled="!canBind(row)"
-                @click="openBindDialog([row])"
+                @click="openSingleBindDialog(row)"
               >
                 绑定商品
               </el-button>
@@ -205,7 +205,8 @@ const rules: FormRules<BindGiftCardsForm> = {
   productId: [{ required: true, message: "请选择商品", trigger: "change" }],
   expiryAt: [{ required: true, message: "请选择有效期", trigger: "change" }],
 };
-function canBind(row: GiftCardItem) {
+function canBind(tableRow: unknown) {
+  const row = tableRow as GiftCardItem;
   return row.status === "UNBOUND" && !row.productId;
 }
 function statusLabel(status?: GiftCardItem["displayStatus"]) {
@@ -253,13 +254,16 @@ function sizeChange() {
   params.pageNum = 1;
   void fetchData();
 }
-async function openBindDialog(cards = selectedCards.value) {
+async function openBindDialog(cards: GiftCardItem[] = selectedCards.value) {
   bindForm.cardIds = cards.map((card) => card.id);
   bindVisible.value = true;
   if (!products.value.length) {
     const result = await ProductAPI.getPage({ pageNum: 1, pageSize: 100 });
     products.value = result.list || [];
   }
+}
+async function openSingleBindDialog(tableRow: unknown) {
+  await openBindDialog([tableRow as GiftCardItem]);
 }
 function resetBindForm() {
   bindForm.cardIds = [];

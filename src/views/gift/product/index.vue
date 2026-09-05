@@ -204,7 +204,7 @@ const form = reactive<ProductForm>({
   shortName: "",
   coverImage: "",
   detailImages: [],
-  referenceValue: undefined,
+  referenceValue: null,
   description: "",
   deliveryScope: "",
   afterSales: "",
@@ -249,7 +249,7 @@ function resetForm() {
     shortName: "",
     coverImage: "",
     detailImages: [],
-    referenceValue: undefined,
+    referenceValue: null,
     description: "",
     deliveryScope: "",
     afterSales: "",
@@ -263,7 +263,10 @@ async function openDialog(id?: string) {
   resetForm();
   if (id) {
     const data = await ProductAPI.getFormData(id);
-    Object.assign(form, data, { detailImages: data.detailImages || [] });
+    Object.assign(form, data, {
+      detailImages: data.detailImages || [],
+      referenceValue: data.referenceValue == null ? null : Number(data.referenceValue),
+    });
     detailFileList.value = (data.detailImages || []).map((url) => ({
       name: url.split("/").pop() || "图片",
       url,
@@ -278,7 +281,15 @@ async function uploadCover(options: UploadRequestOptions) {
     uploadedDuringEdit.add(result.url);
     options.onSuccess(result);
   } catch (error) {
-    options.onError(error as Error);
+    const message = error instanceof Error ? error.message : "图片上传失败";
+    options.onError(
+      Object.assign(new Error(message), {
+        name: "UploadAjaxError",
+        status: 0,
+        method: options.method,
+        url: options.action,
+      })
+    );
   }
 }
 async function uploadDetail(options: UploadRequestOptions) {
@@ -288,7 +299,15 @@ async function uploadDetail(options: UploadRequestOptions) {
     uploadedDuringEdit.add(result.url);
     options.onSuccess(result);
   } catch (error) {
-    options.onError(error as Error);
+    const message = error instanceof Error ? error.message : "图片上传失败";
+    options.onError(
+      Object.assign(new Error(message), {
+        name: "UploadAjaxError",
+        status: 0,
+        method: options.method,
+        url: options.action,
+      })
+    );
   }
 }
 function removeCover() {
@@ -321,7 +340,8 @@ async function resetDialog() {
   if (!saved) await Promise.all([...uploadedDuringEdit].map((url) => ProductAPI.deleteImage(url)));
   resetForm();
 }
-async function handleDelete(row: ProductItem) {
+async function handleDelete(tableRow: unknown) {
+  const row = tableRow as ProductItem;
   try {
     await ElMessageBox.confirm(`确认删除商品“${row.name}”吗？`, "提示", { type: "warning" });
   } catch {

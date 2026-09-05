@@ -144,7 +144,8 @@ function sizeChange() {
   params.pageNum = 1;
   void fetchData();
 }
-async function confirmShip(row: RedeemOrderItem) {
+async function confirmShip(tableRow: unknown) {
+  const row = tableRow as RedeemOrderItem;
   await ElMessageBox.confirm(`确认订单 ${row.orderNo} 已发货？`, "确认发货", { type: "warning" });
   await RedeemOrderAPI.ship(row.orderNo);
   ElMessage.success("已确认发货");

@@ -19,8 +19,12 @@ export interface ProductItem {
   hasBoundCards?: boolean;
 }
 
-export interface ProductForm extends Omit<ProductItem, "id" | "createTime" | "updateTime"> {
+export interface ProductForm extends Omit<
+  ProductItem,
+  "id" | "createTime" | "updateTime" | "referenceValue"
+> {
   id?: string;
+  referenceValue: number | null;
 }
 
 export interface UploadImageResult {
