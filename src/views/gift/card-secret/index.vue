@@ -36,7 +36,7 @@
               <div class="table-actions">
                 <el-button link type="primary" @click="openCards(row)">查看卡号</el-button>
                 <el-button link type="primary" @click="exportPrinting(row)">制卡文件</el-button>
-                <el-button link type="primary" @click="exportQr(row)">二维码数据</el-button>
+                <el-button link type="primary" @click="exportQr(row)">二维码图片</el-button>
               </div>
             </template>
           </el-table-column>
@@ -251,10 +251,10 @@ async function exportPrinting(tableRow: unknown) {
 async function exportQr(tableRow: unknown) {
   const row = tableRow as CardSecretBatchItem;
   try {
-    await ElMessageBox.confirm(`确认导出批次“${row.batchNo}”的二维码数据吗？`, "导出确认", {
+    await ElMessageBox.confirm(`确认导出批次“${row.batchNo}”的二维码图片包吗？`, "导出确认", {
       type: "warning",
     });
-    downloadBlob(await CardSecretAPI.exportQr(row.id), `${row.batchNo}-二维码数据.xlsx`);
+    downloadBlob(await CardSecretAPI.exportQr(row.id), `${row.batchNo}-二维码图片.zip`);
   } catch {
     /* 取消时不提示 */
   }
