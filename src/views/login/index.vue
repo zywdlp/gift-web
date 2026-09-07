@@ -7,52 +7,61 @@
     <div class="login-layout">
       <div class="login-brand">
         <div class="login-brand__header">
-          <el-image :src="logo" class="login-brand__logo" />
+          <span class="login-brand__seal" aria-hidden="true">岩</span>
           <div class="login-brand__identity">
-            <span class="login-brand__name">{{ appConfig.title }}</span>
-            <span class="login-brand__version">v{{ appConfig.version }}</span>
+            <span class="login-brand__name">岩茶馆礼品管理系统</span>
+            <span class="login-brand__subtitle">YANCHA GIFT MANAGEMENT</span>
           </div>
         </div>
 
         <div class="login-brand__hero">
           <div class="login-brand__main">
-            <el-tag class="login-brand__tag" type="primary" effect="plain" round>
-              <span class="login-brand__tag-dot" />
-              企业级解决方案
-            </el-tag>
-            <h1 class="login-brand__title">企业级管理系统</h1>
+            <p class="login-brand__eyebrow">
+              <span />
+              岩茶礼赠运营中心
+            </p>
+            <h1 class="login-brand__title">
+              让每一份岩茶礼赠
+              <br />
+              都有迹可循
+            </h1>
             <p class="login-brand__desc">
-              提供安全、高效、可扩展的管理解决方案，助力企业数字化转型与业务增长。
+              统一管理礼品、卡券与兑换订单，让选茶、发放和履约清楚衔接。
             </p>
           </div>
-          <div class="login-brand__features">
-            <div class="login-brand__feature">
-              <span class="login-brand__feature-mark">
-                <span class="login-brand__feature-icon i-svg:security" />
-              </span>
-              <span class="login-brand__feature-text">安全可靠</span>
+          <div class="login-brand__flow" aria-label="礼品管理流程">
+            <div class="login-brand__flow-item">
+              <span class="login-brand__flow-number">01</span>
+              <div>
+                <strong>礼品建档</strong>
+                <span>维护茶礼与权益信息</span>
+              </div>
             </div>
-            <div class="login-brand__feature">
-              <span class="login-brand__feature-mark">
-                <el-icon class="login-brand__feature-icon"><Clock /></el-icon>
-              </span>
-              <span class="login-brand__feature-text">高效稳定</span>
+            <div class="login-brand__flow-item">
+              <span class="login-brand__flow-number">02</span>
+              <div>
+                <strong>卡密管理</strong>
+                <span>跟踪生成、发放与状态</span>
+              </div>
             </div>
-            <div class="login-brand__feature">
-              <span class="login-brand__feature-mark">
-                <span class="login-brand__feature-icon i-svg:flexible" />
-              </span>
-              <span class="login-brand__feature-text">灵活扩展</span>
+            <div class="login-brand__flow-item">
+              <span class="login-brand__flow-number">03</span>
+              <div>
+                <strong>兑换履约</strong>
+                <span>掌握订单与核销进度</span>
+              </div>
             </div>
           </div>
         </div>
+        <p class="login-brand__quote">一岩一味，以礼传心</p>
       </div>
 
       <div class="login-card">
         <div class="login-card__inner">
           <div class="login-card__form">
-            <h2 class="login-card__title">欢迎回来</h2>
-            <p class="login-card__desc">请完成身份验证后进入系统</p>
+            <p class="login-card__eyebrow">管理员入口</p>
+            <h2 class="login-card__title">登录管理系统</h2>
+            <p class="login-card__desc">使用管理员账号继续</p>
 
             <el-form
               ref="loginFormRef"
@@ -61,17 +70,21 @@
               size="large"
               :validate-on-rule-change="false"
             >
+              <label class="login-field-label" for="login-username">用户名</label>
               <el-form-item prop="username">
                 <el-input
+                  id="login-username"
                   v-model.trim="loginFormData.username"
                   placeholder="用户名"
                   :prefix-icon="UserIcon"
                 />
               </el-form-item>
 
+              <label class="login-field-label" for="login-password">密码</label>
               <el-tooltip :visible="isCapsLock" content="大写锁定已开启" placement="right">
                 <el-form-item prop="password">
                   <el-input
+                    id="login-password"
                     v-model.trim="loginFormData.password"
                     placeholder="密码"
                     type="password"
@@ -83,9 +96,11 @@
                 </el-form-item>
               </el-tooltip>
 
+              <label class="login-field-label" for="login-captcha">验证码</label>
               <el-form-item prop="captchaCode">
                 <div class="captcha-row">
                   <el-input
+                    id="login-captcha"
                     v-model.trim="loginFormData.captchaCode"
                     placeholder="验证码"
                     class="captcha-row__input"
@@ -122,7 +137,7 @@
           </div>
         </div>
 
-        <div class="login-footer">Copyright © 2021-2026 youlai.tech</div>
+        <div class="login-footer">岩茶馆礼品管理系统 · 内部运营平台</div>
       </div>
     </div>
   </div>
@@ -131,16 +146,14 @@
 <script setup lang="ts">
 defineOptions({ name: "LoginPage", inheritAttrs: false });
 
-import { Clock, Lock, Loading, Refresh, User } from "@element-plus/icons-vue";
+import { Lock, Loading, Refresh, User } from "@element-plus/icons-vue";
 import type { FormInstance } from "element-plus";
 import AuthAPI from "@/api/auth";
 import type { LoginRequest } from "@/api/auth";
 import router from "@/router";
 import { useUserStore } from "@/stores";
 import { AuthStorage } from "@/utils/auth";
-import { appConfig } from "@/settings";
 import ThemeSwitch from "@/components/ThemeSwitch/index.vue";
-import logo from "@/assets/images/logo.png";
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -286,20 +299,6 @@ $input-h: 44px;
     font-weight: 600;
     line-height: 1;
     color: $text-primary;
-  }
-
-  &__version {
-    display: inline-flex;
-    align-items: center;
-    height: 22px;
-    padding: 0 8px;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    color: rgba($primary, 0.88);
-    background: rgba($primary, 0.07);
-    border: 1px solid rgba($primary, 0.13);
-    border-radius: 999px;
   }
 
   &__hero {
@@ -463,11 +462,11 @@ $input-h: 44px;
   }
 }
 
-::deep(.el-form-item) {
+:deep(.el-form-item) {
   margin-bottom: 14px;
 }
 
-::deep(.el-input__wrapper) {
+:deep(.el-input__wrapper) {
   height: $input-h;
 }
 
@@ -569,12 +568,6 @@ $input-h: 44px;
 
   &__name {
     color: rgb(255 255 255 / 86%);
-  }
-
-  &__version {
-    color: rgb(167 190 255 / 92%);
-    background: rgba($primary, 0.12);
-    border-color: rgba($primary, 0.2);
   }
 
   &__tag {
@@ -694,6 +687,410 @@ $input-h: 44px;
       width: 100%;
       padding: 0;
     }
+  }
+}
+
+/* 岩茶馆登录首页 */
+.login-page {
+  --el-color-primary: #a85f35;
+  --el-color-primary-light-3: #bd7f5a;
+  --el-color-primary-light-5: #cfa087;
+  --el-color-primary-light-7: #e3c7b8;
+  --el-color-primary-light-9: #f7eee9;
+  --el-color-primary-dark-2: #874725;
+  font-family: "Noto Serif SC", "Songti SC", "Microsoft YaHei", sans-serif;
+  background: #f4efe7;
+}
+
+.login-brand {
+  flex-basis: 61%;
+  padding: 38px 72px 44px;
+  color: #f8f1e5;
+  background:
+    linear-gradient(118deg, rgba(29, 21, 16, 0.08), rgba(29, 21, 16, 0.72)),
+    radial-gradient(circle at 18% 22%, rgba(185, 106, 58, 0.32), transparent 34%),
+    linear-gradient(145deg, #493226 0%, #291f19 58%, #191512 100%);
+
+  &::before,
+  &::after {
+    position: absolute;
+    content: "";
+    border: 1px solid rgba(238, 211, 172, 0.14);
+    border-radius: 50%;
+  }
+
+  &::before {
+    right: -14vw;
+    bottom: -27vw;
+    width: 58vw;
+    height: 58vw;
+    box-shadow:
+      0 0 0 70px rgba(238, 211, 172, 0.035),
+      0 0 0 150px rgba(238, 211, 172, 0.025),
+      0 0 0 240px rgba(238, 211, 172, 0.018);
+  }
+
+  &::after {
+    top: 18%;
+    left: -170px;
+    width: 360px;
+    height: 360px;
+  }
+
+  &__header {
+    gap: 13px;
+  }
+
+  &__seal {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    font-family: "STKaiti", "KaiTi", serif;
+    font-size: 24px;
+    color: #321f15;
+    background: #d8a16f;
+    border: 1px solid rgba(255, 238, 211, 0.64);
+    box-shadow: inset 0 0 0 4px rgba(55, 31, 19, 0.12);
+  }
+
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+
+  &__name {
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff9ef;
+    letter-spacing: 0.08em;
+  }
+
+  &__subtitle {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 9px;
+    color: rgba(245, 225, 197, 0.58);
+    letter-spacing: 0.18em;
+  }
+
+  &__hero {
+    width: min(690px, 100%);
+    padding: 32px 0 70px;
+  }
+
+  &__eyebrow {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d9aa78;
+    letter-spacing: 0.2em;
+
+    span {
+      width: 34px;
+      height: 1px;
+      background: #c98850;
+    }
+  }
+
+  &__title {
+    margin-bottom: 22px;
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: clamp(42px, 4vw, 64px);
+    font-weight: 700;
+    line-height: 1.32;
+    color: #fff8ed;
+    letter-spacing: 0.04em;
+    text-wrap: balance;
+  }
+
+  &__desc {
+    max-width: 550px;
+    font-size: 16px;
+    line-height: 1.9;
+    color: rgba(246, 232, 211, 0.68);
+    letter-spacing: 0.03em;
+  }
+
+  &__flow {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    max-width: 670px;
+    margin-top: 46px;
+    border-top: 1px solid rgba(236, 211, 178, 0.18);
+    border-bottom: 1px solid rgba(236, 211, 178, 0.18);
+  }
+
+  &__flow-item {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 20px 20px 20px 0;
+
+    & + & {
+      padding-left: 20px;
+      border-left: 1px solid rgba(236, 211, 178, 0.18);
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    strong {
+      font-size: 15px;
+      color: #f9eee0;
+      letter-spacing: 0.06em;
+    }
+
+    div > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      color: rgba(238, 220, 196, 0.52);
+      white-space: nowrap;
+    }
+  }
+
+  &__flow-number {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-style: italic;
+    color: #c88750;
+  }
+
+  &__quote {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-family: "STKaiti", "KaiTi", serif;
+    font-size: 14px;
+    color: rgba(241, 220, 190, 0.42);
+    letter-spacing: 0.32em;
+  }
+}
+
+.login-card {
+  flex-basis: 39%;
+  padding-bottom: 30px;
+  background:
+    linear-gradient(rgba(255, 253, 249, 0.94), rgba(255, 253, 249, 0.94)),
+    repeating-linear-gradient(0deg, transparent 0 4px, rgba(90, 64, 45, 0.025) 4px 5px);
+
+  &__inner {
+    max-width: 450px;
+    padding: 0 34px;
+  }
+
+  &__form {
+    padding-top: 6px;
+  }
+
+  &__eyebrow {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a85f35;
+    letter-spacing: 0.22em;
+  }
+
+  &__title {
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-size: 32px;
+    color: #34261f;
+    letter-spacing: 0.04em;
+  }
+
+  &__desc {
+    margin: 10px 0 32px;
+    font-size: 15px;
+    color: #7d7068;
+  }
+}
+
+.login-toolbar {
+  :deep(.theme-switch) {
+    color: #725e52;
+  }
+}
+
+.login-field-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #51433b;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+:deep(.el-input__wrapper) {
+  height: 46px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.74);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px #d9d0c8 inset;
+
+  &:hover {
+    box-shadow: 0 0 0 1px #bba99c inset;
+  }
+
+  &.is-focus {
+    box-shadow: 0 0 0 1px #a85f35 inset;
+  }
+}
+
+.captcha-img {
+  height: 46px;
+  background: rgba(255, 255, 255, 0.74);
+  border-color: #d9d0c8;
+  border-radius: 3px;
+}
+
+.login-options {
+  margin-top: -2px;
+  margin-bottom: 24px;
+}
+
+.login-btn {
+  height: 48px;
+  border-radius: 3px;
+  box-shadow: 0 10px 24px rgba(119, 63, 31, 0.18);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 12px 26px rgba(119, 63, 31, 0.24);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #a85f35;
+    outline-offset: 3px;
+  }
+}
+
+.login-footer {
+  font-size: 12px;
+  color: #a09389;
+  letter-spacing: 0.08em;
+}
+
+.dark .login-page {
+  --el-color-primary: #c47a4b;
+  background: #171310;
+}
+
+.dark .login-brand {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(170, 91, 48, 0.2), transparent 34%),
+    linear-gradient(145deg, #39271e 0%, #211915 58%, #13100e 100%);
+
+  &__name,
+  &__title {
+    color: #fff8ed;
+  }
+}
+
+.dark .login-card {
+  background: #1d1916;
+
+  &__title {
+    color: #f4e9dc;
+  }
+
+  &__desc {
+    color: #a99b91;
+  }
+}
+
+.dark .login-field-label {
+  color: #d8c9bd;
+}
+
+.dark :deep(.el-input__wrapper) {
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 0 0 1px #4a4039 inset;
+}
+
+@media (max-width: 1024px) {
+  .login-brand {
+    flex: none;
+    padding: 24px 40px;
+    color: #f8f1e5;
+    background: linear-gradient(135deg, #493226, #251c17);
+
+    &__header {
+      padding-right: 54px;
+    }
+
+    &__quote {
+      display: none;
+    }
+  }
+
+  .login-card {
+    padding: 64px 48px 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-brand {
+    padding: 20px 64px 20px 20px;
+
+    &__seal {
+      width: 40px;
+      height: 40px;
+      font-size: 21px;
+    }
+
+    &__name {
+      font-size: 17px;
+    }
+
+    &__subtitle {
+      display: none;
+    }
+  }
+
+  .login-toolbar {
+    top: 28px;
+  }
+
+  .login-card {
+    padding: 52px 22px 22px;
+
+    &__inner {
+      padding: 0;
+    }
+
+    &__title {
+      font-size: 28px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-brand,
+  .login-card {
+    animation: none;
+  }
+
+  .login-btn {
+    transition: none;
   }
 }
 </style>

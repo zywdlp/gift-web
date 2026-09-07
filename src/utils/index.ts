@@ -6,7 +6,4 @@
 export { Storage } from "./storage";
 
 // 数据验证
-export { isExternal, isValidURL, isEmail, isMobile, VALIDATORS } from "./validate";
-
-// 数据格式化
-export { formatGrowthRate, formatFileSize, formatNumber, formatCurrency } from "./format";
+export { isExternal, isValidURL } from "./validate";
