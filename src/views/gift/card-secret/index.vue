@@ -138,6 +138,7 @@ import CardSecretAPI, {
   type GenerateCardSecretForm,
   type GiftCardItem,
 } from "@/api/card-secret";
+import { createRequestId } from "@/utils/request-id";
 import { downloadBlob } from "@/utils/download";
 
 defineOptions({ name: "GiftBatch" });
@@ -183,7 +184,7 @@ function sizeChange() {
   void fetchData();
 }
 function openGenerateDialog() {
-  form.requestId = crypto.randomUUID();
+  form.requestId = createRequestId();
   form.quantity = 100;
   form.remark = "";
   generateVisible.value = true;

@@ -37,7 +37,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "Dashboard",
         meta: {
           title: "数据概览",
-          icon: "homepage",
+          icon: "el-icon-DataAnalysis",
           affix: true,
           keepAlive: true,
         },
