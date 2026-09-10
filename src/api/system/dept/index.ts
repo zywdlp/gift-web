@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import type { DeptQueryParams, DeptItem, DeptForm } from "./types";
 import type { OptionItem } from "@/api/common";
 
-const DEPT_BASE_URL = "/api/v1/depts";
+const DEPT_BASE_URL = "/depts";
 
 const DeptAPI = {
   /** 获取部门树形列表 */

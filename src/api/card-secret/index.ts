@@ -10,7 +10,7 @@ import type {
   BindGiftCardsForm,
 } from "./types";
 
-const BASE_URL = "/api/v1/card-secrets";
+const BASE_URL = "/card-secrets";
 
 const CardSecretAPI = {
   getPage(params?: CardSecretQueryParams) {

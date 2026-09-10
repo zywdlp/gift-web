@@ -4,7 +4,7 @@ import type { DashboardOverview } from "./types";
 const DashboardAPI = {
   getOverview() {
     return request<unknown, DashboardOverview>({
-      url: "/api/v1/dashboard/overview",
+      url: "/dashboard/overview",
       method: "get",
     });
   },

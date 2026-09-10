@@ -10,7 +10,7 @@ import type {
 } from "./types";
 import type { OptionItem, PageResult } from "@/api/common";
 
-const USER_BASE_URL = "/api/v1/users";
+const USER_BASE_URL = "/users";
 
 const UserAPI = {
   getInfo() {

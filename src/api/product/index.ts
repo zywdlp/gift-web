@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import type { PageResult } from "@/api/common";
 import type { ProductForm, ProductItem, ProductQueryParams, UploadImageResult } from "./types";
 
-const PRODUCT_BASE_URL = "/api/v1/products";
+const PRODUCT_BASE_URL = "/products";
 
 const ProductAPI = {
   getPage(params?: ProductQueryParams) {
